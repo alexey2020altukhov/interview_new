@@ -133,14 +133,14 @@ Kafka работает по pull модели
 
 ### Что содержит сообщение kafka?
 Kafka Record
-├── Key
-├── Value
-├── Headers
-├── Timestamp
-└── Metadata
-    ├── Topic
-    ├── Partition
-    └── Offset
+- Key
+- Value
+- Headers
+- Timestamp
+- Metadata
+  - Topic
+  - Partition
+  - Offset
 
 Key — ключ, используется для определения partition. Сообщения с одинаковым key обычно попадают в одну partition.
 
@@ -158,3 +158,13 @@ Headers - дополнительные метаданные. Не являютс
 Timestamp - временная метка сообщения.
 
 После записи Kafka связывает record с topic, partition и offset — это уже метаданные положения сообщения в Kafka.
+
+### Что Kafka хранит во внутренних топиках?
+__consumer_offsets
+→ offsets Consumer Groups
+
+__transaction_state
+→ состояние транзакций
+
+__cluster_metadata
+→ метаданные кластера в KRaft
