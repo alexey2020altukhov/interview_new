@@ -170,7 +170,7 @@ __transaction_state
 __cluster_metadata
 → метаданные кластера в KRaft
 
-<a name="ACID"/> 
+<a name="acid"/> 
 
 ## ACID
 ### Что такое ACID
