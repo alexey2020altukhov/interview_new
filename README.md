@@ -1,9 +1,9 @@
 # Вопросы к собеседованию
 
-[SOLID](#solid)
-[Kafka](#kafka)
-[ACID](#acid)
-[Spring](#spring)
+[SOLID](#solid) 
+[Kafka](#kafka) 
+[ACID](#acid) 
+[Spring](#spring) 
 
 <a name="solid"/> 
 
