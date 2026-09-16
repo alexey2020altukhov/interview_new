@@ -7,6 +7,16 @@
 - [Spring](#spring) 
 - [Архитектурные паттерны](#architectural_patterns)
 
+### Зачем нужен Dispatcher Servlet
+DispatcherServlet — это центральный сервлет Spring MVC, который принимает все HTTP-запросы и распределяет их нужным контроллерам.
+
+### Что происходит при запуске приложения Spring?
+Spring Boot:
+- Запускает встроенный Tomcat.
+- Создаёт ApplicationContext.
+- Создаёт DispatcherServlet.
+- Регистрирует его в контейнере сервлетов.
+
 ### Зачем нужен Spring Cloud?
 
 Spring Cloud — это набор инструментов для разработки микросервисных систем.
