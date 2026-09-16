@@ -2,7 +2,7 @@
 
 [SOLID](#solid) 
 [Kafka](#kafka) 
-[ACID] (#acid)
+[ACID](#acid)
 
 <a name="solid"/> 
 
