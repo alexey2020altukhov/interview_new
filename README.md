@@ -7,6 +7,66 @@
 - [Spring](#spring) 
 - [Архитектурные паттерны](#architectural_patterns)
 
+<a name="spring-containers"/> 
+
+## Spring контейнеры
+Spring Framework предоставляет два наиболее фундаментальных и важных пакета, это пакеты org.springframework.beans и org.springframework.context. Код в этих пакетах обеспечивает основу для инверсии функций управления / внедрения зависимостей в Spring. Контейнеры Spring отвечают за создание объектов bean и внедрение их в классы.
+
+**BeanFactory** - самый простой контейнер, обеспечивающий базовую поддержку DI, основан на интерфейсе org.springframework.beans.factory.BeanFactory. Наиболее распространенным классом реализации является XmlBeanFactory.
+
+**ApplicationContext** - обертка поверх BeanFactory, предоставляющая некоторые дополнительные возможности, например AOP, транзакции, безопасность, i18n, и т.п. ApplicationContext - это усовершенствованный контейнер, который расширяет функциональность BeanFactory в более ориентированном на фреймворк стиле. Чаще всего используются следующие реализации: ClassPathXmlApplicationContext, FileSystemXmlApplicationContext, WebXmlApplicationContext, AnnotationConfigWebApplicationContext и т.д.
+
+<a name="bean-post-processor"/> 
+
+## BeanFactoryPostProcessor и BeanPostProcessor
+
+**BeanFactoryPostProcessor** позволяет настраивать определения bean-компонентов, а также работать с их конфигурационными метаданными ещё до фактического создания этих bean-компонентов. BeanFactoryPostProcessor создается и запускается перед BeanPostProcessor.
+
+<details>
+  <summary>Показать код</summary>
+	
+```
+public interface BeanFactoryPostProcessor {
+	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory);
+}
+```
+</details>
+
+**BeanPostProcessor** - это интерфейс, который позволяет вмешиваться в процесс создания и настройки бинов. 
+BeanPostProcessor предоставляет два метода, которые можно реализовать:
+- postProcessBeforeInitialization: вызывается перед инициализацией бина, используется для изменения или настройки свойств бина перед его инициализацией.
+- postProcessAfterInitialization: вызывается после инициализацией бина, используется для изменения или настройки свойств бина после его инициализации.
+
+<details>
+  <summary>Показать код</summary>
+
+```
+public class MyBeanPostProcessor implements BeanPostProcessor {
+
+	@Override
+	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+		// Ваш код для изменения или настройки свойств бина перед его инициализацией
+		return bean;
+	}
+
+	@Override
+	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+		// Ваш код для изменения или настройки свойств бина после его инициализации
+		return bean;
+	}
+}
+```
+</details>
+
+<a name="post-construct-pre-destroy"/> 
+
+## @PostConstruct и @PreDestroy
+**@PostConstruct** и **@PreDestroy** - аннотации, которые используются для выполнения действий до и после завершения жизненного цикла бина.
+
+**@PostConstruct** используется для аннотирования метода, который необходимо выполнить после создания бина, но до его использования. 
+
+**@PreDestroy** используется для аннотирования метода, который необходимо выполнить перед уничтожением бина.
+
 ### Зачем нужен Dispatcher Servlet
 DispatcherServlet — это центральный сервлет Spring MVC, который принимает все HTTP-запросы и распределяет их нужным контроллерам.
 
@@ -16,6 +76,9 @@ Spring Boot:
 - Создаёт ApplicationContext.
 - Создаёт DispatcherServlet.
 - Регистрирует его в контейнере сервлетов.
+
+### Зачем Interceptor?
+Interceptor в Spring MVC используется для перехвата HTTP-запросов до и после выполнения контроллера. Его часто применяют для авторизации, логирования и проверки общих условий. В отличие от Filter, он работает внутри Spring MVC и имеет доступ к контексту Spring. В отличие от AOP, он ориентирован именно на обработку web-запросов.
 
 ### Зачем нужен Spring Cloud?
 
