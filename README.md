@@ -218,3 +218,98 @@ ACID - это стандарт того, какие гарантии должн�
 Spring — это основной фреймворк/экосистема.
 
 Spring Boot — это надстройка над Spring, которая максимально упрощает создание и запуск приложения за счёт автоконфигурации, starter-зависимостей и встроенного сервера.
+
+### Какие способы внедрения бинов существуют?
+**Способы внедрения бинов:**
+- Через конструктор. Преимущество: отсутствие рефлексии, внедрение зависимостей будет работать даже при использовании другого контейнера (не Spring). 
+<details>
+  <summary>Пример</summary>
+
+```
+private DependencyA dependencyA;
+private DependencyB dependencyB;
+private DependencyC dependencyC;
+
+@Autowired
+public DI(DependencyA dependencyA, DependencyB dependencyB, DependencyC dependencyC) {
+    this.dependencyA = dependencyA;
+    this.dependencyB = dependencyB;
+    this.dependencyC = dependencyC;
+}
+```
+А можно просто воспользоваться аннотацией ``@RequiredArgsContructor``, повесив её над классом, и пометить необходимые поля как final.
+</details>
+
+- Через поле. Недостаток: Spring через рефлексию подтягивает это поле (у класса найдёт это поле и по нему найдет зависимость которую надо внедрить). Следовательно - более слабый перформанс. Преимуществом является то, что IDEA сразу подсвечивает нам какой бин внедрён (если бин не внедрён, IDEA об этом скажет).
+<details>
+  <summary>Пример</summary>
+
+```@Autowired
+private DependencyA dependencyA;
+@Autowired
+private DependencyB dependencyB;
+@Autowired
+private DependencyC dependencyC;
+
+```
+</details>
+
+- Через сеттер (устарело)
+<details>
+  <summary>Пример</summary>
+
+```
+private DependencyA dependencyA;
+private DependencyB dependencyB;
+private DependencyC dependencyC;
+
+@Autowired
+public void setDependencyA(DependencyA dependencyA) {
+    this.dependencyA = dependencyA;
+}
+
+@Autowired
+public void setDependencyB(DependencyB dependencyB) {
+    this.dependencyB = dependencyB;
+}
+
+@Autowired
+public void setDependencyC(DependencyC dependencyC) {
+    this.dependencyC = dependencyC;
+}
+```
+</details>
+
+### Какие способы создания бинов существуют?
+- Через XML.
+<details>
+  <summary>Пример</summary>
+
+```
+<beans>
+   <!-- A simple bean definition -->
+   <bean id = "fromBeanMessage" class = "com.example.Message">
+       <property name="message" value="This is message from simple bean"/>
+      <!-- collaborators and configuration for this bean go here -->
+   </bean>
+   <!-- A bean definition with lazy init set on -->
+   <bean id = "lazy" class = "com.example.Lazy" lazy-init = "true">
+      <!-- collaborators and configuration for this bean go here -->
+   </bean>
+   <!-- A bean definition with initialization method -->
+   <bean id = "init" class = "com.example.Message" init-method = "getMessage">
+      <!-- collaborators and configuration for this bean go here -->
+   </bean>
+   <!-- A bean definition with destruction method -->
+   <bean id = "destroyBean" class = "com.example.Message" destroy-method = "getMessage">
+      <!-- collaborators and configuration for this bean go here -->
+   </bean>
+</beans>
+```
+</details>
+
+- Через аннотацию ``@Component`` - вешается над классом, говоря спрингу, что от данного класса нужно создать бин.
+- Через аннотацию ``@Bean`` - вешается над методом, возвращаемое значение которого будет являться бином. Используется в классах помеченных ``@Configuration``.
+
+Аннотация ``@Bean`` чаще всего используется в тех случаях, когда необходимо создать бин из класса, который изначально не предназначался для внедрения в Spring Application Context (например, класс из сторонних библиотек). Аннотация ``@Component`` указывается обычно над каким-нибудь пользовательским классом.
+
