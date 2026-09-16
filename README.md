@@ -488,6 +488,22 @@ Eager Loading - загрузи связанные данные сразу
 - DTO projection
 - правильная настройка загрузки данных
 
+### Cascade в JPA
+```
+@OneToMany(
+    cascade = CascadeType.PERSIST
+)
+private List<OrderItem> items;
+```
+
+В JPA есть:
+- CascadeType.PERSIST
+- CascadeType.MERGE
+- CascadeType.REMOVE
+- CascadeType.REFRESH
+- CascadeType.DETACH
+- CascadeType.ALL
+
 <a name="architectural_patterns"/> 
 
 ## Архитектурные паттерны
