@@ -1,11 +1,11 @@
 # Вопросы к собеседованию
 
-[SOLID](#solid) 
-[Kafka](#kafka) 
-[ACID](#acid) 
-[Базы данных](#db)
-[Spring](#spring) 
-[Архитектурные паттерны](#architectural_patterns)
+- [SOLID](#solid)
+- [Kafka](#kafka) 
+- [ACID](#acid) 
+- [Базы данных](#db)
+- [Spring](#spring) 
+- [Архитектурные паттерны](#architectural_patterns)
 
 <a name="solid"/> 
 
