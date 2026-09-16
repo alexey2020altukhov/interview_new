@@ -613,6 +613,457 @@ private List<OrderItem> items;
 - CascadeType.DETACH
 - CascadeType.ALL
 
+## Базовые паттерны проектирования
+Паттерны проектирования — это устоявшиеся удачные решения самых распространнёх проблем, возникающих при проектировании и разработке программ или их частей.  
+
+**1. Порождающие**  
+Эти паттерны решают проблемы обеспечения гибкости создания объектов.  
+
+**Singleton** - обеспечиват существование в системе ровно одного экземпляра некоторого класса.  
+<details>
+  <summary>Пример</summary>
+	
+  ```
+class Singleton {
+
+	private Singleton instance;
+
+	private Singleton() {}
+
+	public static Singletot getInstance() {
+		if (instance == null)
+			instance = new Singleton();
+		return instance;
+	}
+}
+```
+</details>
+
+**Simple Factory** - предоставляет объект для создания других объектов, не раскрывая при этом логику.
+<details>
+  <summary>Пример</summary>
+	
+```
+public interface Door
+{
+    public float getWidth();
+
+    public float getHeight();
+}
+
+public class WoodenDoor implements Door {
+
+    private float width;
+    private float height;
+
+    public WoodenDoor(float width, float height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    public float getWidth() {
+        return this.width;
+    }
+
+    public float getHeight() {
+        return this.height;
+    }
+}
+
+public class DoorFactory
+{
+    public static Door makeDoor(float width, float height) {
+        return new WoodenDoor(width, height);
+    }
+}
+
+//Использование
+Door door = DoorFactory.makeDoor(100, 300);
+```  
+</details>
+
+**Builder** -  позволяет поэтапно создавать сложные объекты.  
+<details>
+  <summary>Пример</summary>
+	
+  ```
+//Машина, которую хотим создать
+public final class Car {
+    private final String name;
+    private final Color color;
+    private final Brand brand;
+    private final Body body;
+    private final Wheels wheels;
+    private final Tuning tuning;
+
+    private Car(Builder builder) {
+        this.name = builder.name;
+        this.color = builder.color;
+        this.brand = builder.brand;
+        this.body = builder.body;
+        this.wheels = builder.wheels;
+        this.tuning = builder.tuning;
+    }
+}
+
+//Строитель
+public static class Builder {
+
+    private final Brand brand;
+    private final String name;
+    private Color color;
+    private Body body;
+    private Wheels wheels;
+    private Tuning tuning;
+
+    /**
+     * Constructor
+     */
+    public Builder(Brand brand, String name) {
+        if (brand == null || name == null) {
+            throw new IllegalArgumentException("brand and name can not be null");
+        }
+        this.brand = brand;
+        this.name = name;
+    }
+
+    public Builder withColor(Color color) {
+        this.color = color;
+        return this;
+    }
+
+    public Builder withBody(Body body) {
+        this.body = body;
+        return this;
+    }
+
+    public Builder withWheels(Wheels wheels) {
+        this.wheels = wheels;
+        return this;
+    }
+
+    public Builder withTuning(Tuning tuning) {
+        this.tuning = tuning;
+        return this;
+    }
+
+    public Car build() {
+        return new Car(this);
+    }
+}
+
+//Использование
+Car premiumCar = new Car.Builder(Brand.MERCEDES, "E200")
+                .withBody(Body.SEDAN)
+                .withColor(Color.WHITE)
+                .withTuning(Tuning.WHITE)
+                .withWheels(Wheels.SPORTS)
+                .build();
+
+```
+</details>
+
+**Prototype** - создает новые объекты, копируя существующие.  
+
+**Factory Method** - делегирует процесс создания объектов классам-наследникам.  
+
+**Abstract Factory** - описывает сущность для создания целых семейств взаимосвязанных объектов.  
+
+**2. Структурные**  
+Эти паттерны решают проблемы эффективного построения связей между объектами.  
+
+**Proxy** - предоставляет объект, который контролирует доступ к другому объекту, перехватывая все вызовы (выполняет функцию контейнера).  
+<details>
+  <summary>Пример</summary>
+	
+  ```
+//Интерфейс
+public interface WebServer {
+
+    void makeRequest(String url);
+}
+
+//Класс, выполняющий фактическую работу
+public class RealWebServer implements WebServer {
+    
+    @Override
+    public void makeRequest(String) { ... }
+}
+
+//Прокси-класс
+public class ProxyWebServer implements WebServer {
+
+    private RealWebServer realServer;
+    private List<String> blockedSites = new ArrayList<>();
+
+    public ProxyWebServer() { 
+	this.realServer = new RealWebServer(); 
+    }
+
+    public void blockWebsite(String url)  {
+        this.blockedSites.add(url);
+    }
+
+    @Override
+    public void makeRequest(String url) {
+        if(!blockedSites.contains(url)) {
+            this.realServer.makeRequest(url);
+        }
+        else {
+ 	    System.out.println("This website is blocked. Contact your administrator");
+        }
+    }
+}
+```
+</details>
+
+**Decorator** - динамически добавляет новую функциональность некоторому объекту, сохраняя его интерфейс.
+<details>
+  <summary>Пример</summary>
+	
+  ```
+//Интерфейс авто
+public interface Car {
+    public int getSpeed();
+    public int getBaggageWeight();
+}
+
+//Обычный автомобиль
+public class SimpleCar implements Car {
+    private int speed = 50;
+    private int baggageWeight = 100;
+
+    @Override
+    public int getSpeed() {
+        return this.speed;
+    }
+
+    @Override
+    public int getBaggageWeight() {
+        return this.baggageWeight;
+    }
+}
+
+//Делаем из простого автомобиля гоночный
+public class SportCar implements Car {
+    private Car car;
+    public SportCar(Car car){
+        this.car = car;
+    }
+
+    @Override
+    public int getSpeed() {
+        return this.car.getSpeed() + 50;
+    }
+
+    @Override
+    public int getBaggageWeight() {
+        return this.car.getBaggageWeight();
+    }
+}
+
+//Делаем из простого автомобиля грузовой
+public class Truck implements Car {
+    private Car car;
+    public Truck(Car car){
+        this.car = car;
+    }
+
+    @Override
+    public int getSpeed() {
+        return this.car.getSpeed();
+    }
+
+    @Override
+    public int getBaggageWeight() {
+        return this.car.getBaggageWeight() + 1000;
+    }
+}
+
+//Использование
+Car simpleCar = new SimpleCar();
+Car sportCar = new SportCar(simpleCar);
+Car truck = new Truck(simpleCar);
+```
+</details>
+
+**Adapter** - на основании некоторого класса создает необходимый клиенту интерфейс.  
+
+**Facade** - описывает унифицированный интерфейс для облегчения работы с набором подсистем.  
+
+**Composite** - работает с базовыми и составными объектами единым образом.  
+
+**Bridge** - разделяет абстракцию от интерфейса, позволяя им меняться независимо.  
+
+**Flyweight** - эффективно работает с огромным количеством схожих объектов.
+
+**3. Поведенческие**  
+Эти паттерны решают проблемы эффективного взаимодействия между объектами.
+
+**Strategy** - описывает набор взаимозаменяемых алгоритмов с единым интерфейсом. 
+<details>
+  <summary>Пример</summary>
+	
+  ```
+public class Computer {
+    private ComputerStrategy strategy;
+
+    public Computer(ComputerStrategy strategy){
+        this.strategy = strategy;
+    }
+
+    public void setNewTask(ComputerStrategy strategy){
+        this.strategy = strategy;
+    }
+
+    public void runTask() {
+        this.strategy.execute();
+    }
+}
+
+// Computer может выполнять много разных алгоритмов-заданий
+// Они приходят к нему через контруктор либо через метод setNewTask. Вот примеры алгоритмов-заданий:
+
+public class Video implements ComputerStrategy {
+    private static final Logger LOGGER = Logger.getLogger(Video.class.getName());
+
+    @Override
+    public void execute() {
+        LOGGER.info("Video playing");
+    }
+}
+
+public class Music implements ComputerStrategy {
+    private static final Logger LOGGER = Logger.getLogger(Music.class.getName());
+
+    @Override
+    public void execute() {
+        LOGGER.info("Music playing");
+    }
+}
+
+// Каждый из этих алгоритмов реализует интерфейс ComputerStrategy:
+
+@FunctionalInterface
+public interface ComputerStrategy {
+    void execute();
+}
+
+public class App {
+    private static final Logger LOGGER = Logger.getLogger(App.class.getName());
+
+    public static void main(String[] args){
+        LOGGER.info("Switch on computer and play movie");
+        Computer computer = new Computer(new Video());
+        computer.runTask();
+
+        LOGGER.info("Find music");
+        computer.setNewTask(new Music());
+        computer.runTask();
+
+        // Java 8
+        Computer functionalComputer = new Computer(
+                () -> LOGGER.info("Write program")
+        );
+        functionalComputer.runTask();
+
+        functionalComputer = new Computer(
+                () -> LOGGER.info("Execute some code and get some output")
+        );
+        functionalComputer.runTask();
+    }
+}
+```
+</details>
+
+**Iterator** - обеспечивает доступ к коллекциям объектов без раскрытия внутреннего устройства этих коллекций.  
+
+**Chain of Responsibility** - позволяет передавать запросы последовательно по цепочке обработчиков. Каждый последующий обработчик решает, может ли он обработать запрос сам и стоит ли передавать запрос дальше по цепи.
+<details>
+  <summary>Пример</summary>
+	
+  ```
+public abstract class AuthenticationProcessor {
+
+    public AuthenticationProcessor nextProcessor;
+
+    public abstract boolean isAuthorize (AuthenticationProvider authProvider);
+}
+
+public class OAuthProcessor extends AuthenticationProcessor {
+
+    public OAuthProcessor(AuthenticationProcessor nextProcessor) {
+        super(nextProcessor);
+    }
+
+    @Override
+    public boolean isAuthorized(AuthenticationProvider authProvider) {
+        if (authProvider instanceof OAuthTokenProvider) {
+            return true;
+        } else if (nextProcessor != null) {
+            return nextProcessor.isAuthorized(authProvider);
+        }
+        
+        return false;
+    }
+}
+
+public class UsernamePasswordProcessor extends AuthenticationProcessor {
+
+    public UsernamePasswordProcessor(AuthenticationProcessor nextProcessor) {
+        super(nextProcessor);
+    }
+
+    @Override
+    public boolean isAuthorized(AuthenticationProvider authProvider) {
+        if (authProvider instanceof UsernamePasswordProvider) {
+            return true;
+        } else if (nextProcessor != null) {
+            return nextProcessor.isAuthorized(authProvider);
+        }
+    return false;
+    }
+}
+
+public class ChainOfResponsibilityTest {
+
+    private static AuthenticationProcessor getChainOfAuthProcessor() {
+        AuthenticationProcessor oAuthProcessor = new OAuthProcessor(null);
+        return new UsernamePasswordProcessor(oAuthProcessor);
+    }
+
+    @Test
+    public void givenOAuthProvider_whenCheckingAuthorized_thenSuccess() {
+        AuthenticationProcessor authProcessorChain = getChainOfAuthProcessor();
+        assertTrue(authProcessorChain.isAuthorized(new OAuthTokenProvider()));
+    }
+
+    @Test
+    public void givenSamlProvider_whenCheckingAuthorized_thenSuccess() {
+        AuthenticationProcessor authProcessorChain = getChainOfAuthProcessor();
+ 
+        assertFalse(authProcessorChain.isAuthorized(new SamlTokenProvider()));
+    }
+}
+```
+</details>
+
+**Observer** - создает объект для отслеживания изменений в подсистеме и нотификации других подсистем.  
+
+**Memento** - сохраняет внутреннее состояние объекта для последующего использования без нарушения инкапсуляции.  
+
+**Command** - описывает объект, представляющий собой некоторое действие, которое можно выполнить в необходимый момент.  
+
+**Interpreter** - определяет способ вычисления выражений некоторого языка.  
+
+**Mediator** - создает объект, которые регулирует взаимодействие между набором подсистем.  
+
+**State** - позволяет объекту менять свое поведение при изменении его внутреннего состояния.  
+
+**Template** method - описывает алгоритм, возлагая реализацию некоторых частей алгоритма на подклассы.  
+
+**Visitor** - отделяет алгоритм от структуры, с которыми алгоритм работает.  
+
 <a name="architectural_patterns"/> 
 
 ## Архитектурные паттерны
