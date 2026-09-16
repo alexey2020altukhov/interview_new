@@ -130,3 +130,31 @@ Consumer делает poll() и получает пачку сообщений. 
 
 ### Kafka это pull или push модель?
 Kafka работает по pull модели
+
+### Что содержит сообщение kafka?
+Kafka Record
+├── Key
+├── Value
+├── Headers
+├── Timestamp
+└── Metadata
+    ├── Topic
+    ├── Partition
+    └── Offset
+
+Key — ключ, используется для определения partition. Сообщения с одинаковым key обычно попадают в одну partition.
+
+Value — само содержимое. Kafka не требует конкретного формата. 
+
+Это может быть:
+- JSON
+- String
+- Avro
+- Protobuf
+- byte[]
+
+Headers - дополнительные метаданные. Не являются основным содержимым сообщения и удобны, например, для передачи технической информации.
+
+Timestamp - временная метка сообщения.
+
+После записи Kafka связывает record с topic, partition и offset — это уже метаданные положения сообщения в Kafka.
