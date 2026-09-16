@@ -1,7 +1,7 @@
 # Вопросы к собеседованию
 
-[SOLID](#solid) 
-[Kafka](#kafka) 
+[SOLID](#solid)
+[Kafka](#kafka)
 [ACID](#acid)
 [Spring](#spring)
 
